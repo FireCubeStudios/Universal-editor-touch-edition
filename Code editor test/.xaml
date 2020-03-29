@@ -39,7 +39,7 @@
                     <x:String>html</x:String>
                     <x:String>csharp</x:String>
                     <x:String>fsharp</x:String>
-                    <!-- <x:String>lua</x:String>-->
+                    <!-- <x:String>lua</x:ng>-->
                     <x:String>python</x:String>
                     <x:String>xml</x:String>
                     <!-- <x:String>php</x:String>
