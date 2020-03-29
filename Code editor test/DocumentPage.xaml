@@ -1,0 +1,72 @@
+﻿<Page
+    x:Class="Code_editor_test.DocumentPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Code_editor_test"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+       xmlns:controlsMicrosoft="using:Microsoft.UI.Xaml.Controls"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+
+    <Grid>
+        <StackPanel Orientation="Vertical">
+            <TextBlock x:Name="FileName" FontSize="20"></TextBlock>
+            <CommandBar Background="Transparent" IsOpen="False" DefaultLabelPosition="Right" OverflowButtonVisibility="Collapsed">
+                <AppBarButton Icon="Edit" Label="Edit" Click="AppBarButton_Click_2"/>
+                <AppBarButton Icon="Save" Label="Save" Click="AppBarButton_Click_1"/>
+            </CommandBar>
+            <TextBlock Margin="0,60,0,0">Support for viewing multiple<LineBreak/>editors coming soon...</TextBlock>
+        </StackPanel>
+        <ContentDialog
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Name="EditDialog"
+        Title="Choose new language and name"
+        PrimaryButtonText="Save changes"
+        CloseButtonText="Cancel"
+            IsPrimaryButtonEnabled="False"
+            PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+        DefaultButton="Primary">
+            <StackPanel Orientation="Vertical">
+                <TextBox Header="Document Name:" PlaceholderText="Name:"  x:Name="DocumentName" TextChanged="DocumentName_TextChanged"/>
+                <ComboBox x:Name="ComboLanguageBox" Header="Language:" SelectedIndex="4"  Width="200" Margin="10">
+                    <x:String>css</x:String>
+                    <!--  <x:String>less</x:String>-->
+                    <x:String>scss</x:String>
+                    <x:String>json</x:String>
+                    <x:String>typescript</x:String>
+                    <x:String>javascript</x:String>
+                    <x:String>html</x:String>
+                    <x:String>csharp</x:String>
+                    <x:String>fsharp</x:String>
+                    <!-- <x:String>lua</x:String>-->
+                    <x:String>python</x:String>
+                    <x:String>xml</x:String>
+                    <!-- <x:String>php</x:String>
+                        <x:String>c++</x:String>
+                        <x:String>razor</x:String>
+                        <x:String>java</x:String>
+                        <x:String>vb</x:String>
+                        <x:String>cofeescript</x:String>
+                        <x:String>pug</x:String>
+                        <x:String>ruby</x:String>
+                        <x:String>powershell</x:String>
+                        <x:String>python</x:String>
+                        <x:String>ruby</x:String>
+                        <x:String>r</x:String>
+                        <x:String>objective-c</x:String>
+                        <x:String>markdown</x:String>
+                        <x:String>diff</x:String>
+                        <x:String>batch</x:String>
+                        <x:String>handlebars</x:String>-->
+                </ComboBox>
+                <TextBlock>More languages coming soon.... <LineBreak/>Intellisense supported: TypeScript, JavaScript, CSS, LESS, SCSS, JSON, HTML</TextBlock>
+            </StackPanel>
+
+
+        </ContentDialog>
+    </Grid>
+</Page>
+

@@ -1,0 +1,221 @@
+﻿<Page
+    x:Class="Code_editor_test.MainPage"
+    x:Name="TheMainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Code_editor_test"
+     xmlns:monaco="using:Monaco"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    xmlns:extensions="using:Microsoft.Toolkit.Uwp.UI.Extensions"
+    extensions:TitleBarExtensions.BackgroundColor="Transparent"
+    extensions:TitleBarExtensions.ForegroundColor="Transparent"
+    mc:Ignorable="d"
+    Background="{ThemeResource SystemControlAcrylicWindowBrush}">
+
+    <Grid>
+        <Grid x:Name="TitleGrid" Background="{ThemeResource SystemControlChromeLowAcrylicWindowBrush}"></Grid>
+        <Grid Background="{ThemeResource SystemControlChromeLowAcrylicWindowBrush}" x:Name="RootGrid" Margin="0,0,0, 40">
+
+            <Grid.ColumnDefinitions>
+
+                <ColumnDefinition Width="230"/>
+
+                <ColumnDefinition Width="5*"/>
+
+            </Grid.ColumnDefinitions>
+            <muxc:MenuBar x:Name="CodeMenuBar" x:Load="False" Background="{ThemeResource SystemControlAcrylicWindowBrush}" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.ZIndex="3">
+                <muxc:MenuBarItem Title="File">
+                    <MenuFlyoutItem Text="New" Click="NewFileItem_Click"/>
+                    <MenuFlyoutSubItem Text="Open..." >
+                        <MenuFlyoutItem Text="Local" Click="OpenFileItem_Click"></MenuFlyoutItem>
+                        <MenuFlyoutItem Text="Recent" IsEnabled="False"></MenuFlyoutItem>
+                        <MenuFlyoutItem Text="Template" IsEnabled="False"></MenuFlyoutItem>
+                    </MenuFlyoutSubItem>
+                    <MenuFlyoutItem Text="Save" Click="SaveFileItem_Click"/>
+                    <MenuFlyoutItem Text="Save As" Click="SaveAsFileItem_Click"/>
+                    <MenuFlyoutItem Text="Exit" IsEnabled="False"/>
+                </muxc:MenuBarItem>
+
+                <muxc:MenuBarItem Title="Edit">
+                    <MenuFlyoutItem Text="Undo" Click="UniversalMenuFlyoutItem_Click"/>
+                    <MenuFlyoutItem Text="Redo" Click="UniversalMenuFlyoutItem_Click"/>
+                    <muxc:MenuFlyoutSeparator/>
+                    <MenuFlyoutItem Text="Cut" Click="UniversalMenuFlyoutItem_Click"/>
+                    <MenuFlyoutItem Text="Copy" Click="UniversalMenuFlyoutItem_Click"/>
+                    <MenuFlyoutItem Text="Paste" Click="UniversalMenuFlyoutItem_Click"/>
+                    <muxc:MenuFlyoutSeparator/>
+                    <MenuFlyoutItem Text="Find" Click="UniversalMenuFlyoutItem_Click"/>
+                    <MenuFlyoutItem Text="Replace" Click="UniversalMenuFlyoutItem_Click"/>
+                    <muxc:MenuFlyoutSeparator/>
+                    <MenuFlyoutItem Text="Toggle Line Comment" IsEnabled="False" Click="MenuFlyoutItem_Click_1"/>
+                    <MenuFlyoutItem Text="Toggle Block Comment"  Click="MenuFlyoutItem_Click"/>
+                </muxc:MenuBarItem>
+
+                <muxc:MenuBarItem Title="Selection">
+                    <MenuFlyoutItem Tag="Ctrl + A" Text="Select All" Click="UniversalMenuFlyoutItem_Click"/>
+                    <MenuFlyoutItem Tag="Shift + Alt + RightArrow " Text="Expand Select" Click="UniversalSelectionMenuFlyoutItem_Click"/>
+                    <MenuFlyoutItem Tag="Shift + Alt + LeftArrow" Text="Shrink Select" Click="UniversalSelectionMenuFlyoutItem_Click"/>
+                    <MenuFlyoutSeparator/>
+                    <MenuFlyoutItem Tag="Shift + Alt + UpArrow" Text="Copy Line Up" Click="UniversalSelectionMenuFlyoutItem_Click"/>
+                    <MenuFlyoutItem Tag="Shift + Alt + DownArrow" Text="Copy Line Down" Click="UniversalSelectionMenuFlyoutItem_Click"/>
+                    <MenuFlyoutItem Tag="Alt + UpArrow" Text="Move Line Up" Click="UniversalSelectionMenuFlyoutItem_Click"/>
+                    <MenuFlyoutItem Tag="Alt + UpArrow" Text="Move Line Down" Click="UniversalSelectionMenuFlyoutItem_Click"/>
+                    <MenuFlyoutSeparator/>
+                    <MenuFlyoutItem Tag="Ctrl + Alt + UpArrow" Text="Add Cursor Above" Click="UniversalSelectionMenuFlyoutItem_Click"/>
+                    <MenuFlyoutItem Tag="Ctrl + Alt + DownArrow" Text="Add Cursor Below" Click="UniversalSelectionMenuFlyoutItem_Click"/>
+                    <MenuFlyoutItem Tag="Shift + Alt + I" Text="Add Cursors To line Ends" Click="UniversalSelectionMenuFlyoutItem_Click"/>
+                    <MenuFlyoutItem Tag="Ctrl + Shift + L" Text="Select All Occurences To Find Match" Click="UniversalSelectionMenuFlyoutItem_Click"/>
+                </muxc:MenuBarItem>
+                <muxc:MenuBarItem Title="View">
+                </muxc:MenuBarItem>
+            </muxc:MenuBar>
+            <controls:TabView SelectionChanged="Tabs_SelectionChanged" Background="{ThemeResource SystemControlAcrylicWindowBrush}" Canvas.ZIndex="1000" Grid.Row="0" Grid.Column="1" AddTabButtonClick="TabView_AddTabButtonClick" TabCloseRequested="Tabs_TabCloseRequested" x:Name="Tabs">
+
+            </controls:TabView>
+
+            <NavigationView x:Name="EditorNav"
+                            x:Load="False"
+                                 Background="{ThemeResource SystemControlAcrylicWindowBrush}"
+                                IsSettingsVisible="False"
+                                Loaded="EditorNav_Loaded"
+                                Margin="0,40,0,0"
+                                PaneDisplayMode="LeftCompact"
+                                IsBackButtonVisible="Collapsed"
+                                IsBackEnabled="False"
+                                SelectionChanged="NavView_SelectionChanged"
+                                Header="Header"
+                                AlwaysShowHeader="False"
+                                PaneTitle="Navigation"
+                                ExpandedModeThresholdWidth="500"
+                                SelectionFollowsFocus="Disabled"
+                                 Grid.Row="0" 
+                            Grid.RowSpan="5"
+                                 IsTabStop="False">
+
+                <NavigationView.MenuItems>
+                    <NavigationViewItem Content="Document" Tag="DocumentFrame" x:Name="DocumentFrame">
+                        <NavigationViewItem.Icon>
+                            <SymbolIcon Symbol="Document" />
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+                    <NavigationViewItem Content="Search" Tag="SearchFrame" x:Name="SearchFrame" SelectsOnInvoked="True">
+                        <NavigationViewItem.Icon>
+                            <SymbolIcon Symbol="Find"/>
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+                    <NavigationViewItem Content="Options" Tag="SettingsOptions" x:Name="SettingsPage">
+                        <NavigationViewItem.Icon>
+                            <SymbolIcon Symbol="Setting" />
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+                </NavigationView.MenuItems>
+
+                <Frame x:Name="contentFrame"/>
+            </NavigationView>
+
+
+
+        </Grid>
+
+        <local:BarFlyout Canvas.ZIndex="1700" HorizontalAlignment="Right" Margin="10,10,10,10" x:Name="SettingsPanel" x:Load="False" BackdropTapped="MyFancyPanel_BackdropTapped"/>
+        <Grid Loaded="StatusTextGrid_Loaded" x:Name="StatusTextGrid" CornerRadius="5" Padding="5" Canvas.ZIndex="600" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="50" Background="{ThemeResource SystemControlAccentDark2AcrylicElementAccentDark2MediumHighBrush}">
+            <TextBlock x:Name="StatusText" Foreground="White"/>
+        </Grid>
+        <StackPanel x:Name='CodeBar' x:Load="False" Orientation="Horizontal" VerticalAlignment="Bottom" Background="{ThemeResource SystemControlAccentDark2AcrylicElementAccentDark2MediumHighBrush}">
+            <Button x:Name="CurlyBracketButton" Margin="5" Click="UniversalToolBarButton_Click"/>
+            <Button x:Name="CurlyBracketButtonEnd" Margin="5" Click="UniversalToolBarButton_Click"/>
+            <Button Content="(" Margin="5" Click="UniversalToolBarButton_Click"/>
+            <Button Content=")" Margin="5" Click="UniversalToolBarButton_Click"/>
+            <Button Content="[" Margin="5" Click="UniversalToolBarButton_Click"/>
+            <Button Content="]" Margin="5" Click="UniversalToolBarButton_Click"/>
+            <Button x:Name="OtherbracesButton" Margin="5" Click="UniversalToolBarButton_Click"/>
+            <Button x:Name="OtherbracesButtonEnd" Margin="5" Click="UniversalToolBarButton_Click"/>
+            <Button x:Name="OtherbracesButtonAlternativeEnd" Margin="5" Click="UniversalToolBarButton_Click"/>
+            <muxc:DropDownButton Content="Cut" Margin="5">
+                <muxc:DropDownButton.Flyout>
+                    <MenuFlyout Placement="Top">
+                        <MenuFlyoutItem Text="Cut" Click="UniversalMenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Copy" Click="UniversalMenuFlyoutItem_Click"/>
+                        <MenuFlyoutItem Text="Paste" Click="UniversalMenuFlyoutItem_Click"/>
+                    </MenuFlyout>
+                </muxc:DropDownButton.Flyout>
+            </muxc:DropDownButton>
+            <Button Content="Context menu" Click="ContextMenu_Click" Margin="5"/>
+            <Button Content="Tab" Click="Tab_Click" Margin="5"/>
+            <Button Content="''" Margin="5" Click="UniversalToolBarButton_Click"/>
+            <Button Content='""' Margin="5" Click="UniversalToolBarButton_Click"/>
+            <Button Content="//" Margin="5" Click="UniversalToolBarButton_Click"/>
+            <Button Content="/" Margin="5" Click="UniversalToolBarButton_Click"/>
+            <Button Content=";" Margin="5" Click="UniversalToolBarButton_Click"/>
+            <Button Content="=" Margin="5" Click="UniversalToolBarButton_Click"/>
+            <Button Content="Other special characters" Margin="5">
+                <Button.Flyout>
+                    <CommandBarFlyout>
+                        <AppBarButton Content="*" Click="UniversalToolBarButton_Click"></AppBarButton>
+                        <AppBarButton Content="-" Click="UniversalToolBarButton_Click"></AppBarButton>
+                        <AppBarButton Content="_" Click="UniversalToolBarButton_Click"></AppBarButton>
+                        <AppBarButton Content=":" Click="UniversalToolBarButton_Click"></AppBarButton>
+                        <AppBarButton Content="\" Click="UniversalToolBarButton_Click"></AppBarButton>
+                        <AppBarButton x:Name="AndButton" Click="UniversalToolBarButton_Click"></AppBarButton>
+                        <AppBarButton Content="#" Click="UniversalToolBarButton_Click"></AppBarButton>
+                        <AppBarButton Content="+" Click="UniversalToolBarButton_Click"></AppBarButton>
+                    </CommandBarFlyout>
+                </Button.Flyout>
+            </Button>
+            <muxc:DropDownButton Content="Commands" Margin="5">
+                <muxc:DropDownButton.Flyout>
+                    <MenuFlyout Placement="Top">
+                        <MenuFlyoutSubItem Text="File">
+                            <MenuFlyoutItem Text="New" Click="NewFileItem_Click"/>
+                            <MenuFlyoutSubItem Text="Open..." >
+                                <MenuFlyoutItem Text="Local" Click="OpenFileItem_Click"></MenuFlyoutItem>
+                                <MenuFlyoutItem Text="Recent" IsEnabled="False"></MenuFlyoutItem>
+                                <MenuFlyoutItem Text="Template" IsEnabled="False"></MenuFlyoutItem>
+                            </MenuFlyoutSubItem>
+                            <MenuFlyoutItem Text="Save" Click="SaveFileItem_Click"/>
+                            <MenuFlyoutItem Text="Save As" Click="SaveAsFileItem_Click"/>
+                            <MenuFlyoutItem Text="Exit" IsEnabled="False"/>
+                        </MenuFlyoutSubItem>
+                        <MenuFlyoutSubItem Text="Edit">
+                            <MenuFlyoutItem Text="Undo" Click="UniversalMenuFlyoutItem_Click"/>
+                            <MenuFlyoutItem Text="Redo" Click="UniversalMenuFlyoutItem_Click"/>
+                            <muxc:MenuFlyoutSeparator/>
+                            <MenuFlyoutItem Text="Cut" Click="UniversalMenuFlyoutItem_Click"/>
+                            <MenuFlyoutItem Text="Copy" Click="UniversalMenuFlyoutItem_Click"/>
+                            <MenuFlyoutItem Text="Paste" Click="UniversalMenuFlyoutItem_Click"/>
+                            <muxc:MenuFlyoutSeparator/>
+                            <MenuFlyoutItem Text="Find" Click="UniversalMenuFlyoutItem_Click"/>
+                            <MenuFlyoutItem Text="Replace" Click="UniversalMenuFlyoutItem_Click"/>
+                            <muxc:MenuFlyoutSeparator/>
+                            <MenuFlyoutItem Text="Toggle Line Comment" IsEnabled="False" Click="MenuFlyoutItem_Click_1"/>
+                            <MenuFlyoutItem Text="Toggle Block Comment"  Click="MenuFlyoutItem_Click"/>
+                        </MenuFlyoutSubItem>
+                        <MenuFlyoutSubItem Text="Selection">
+                            <MenuFlyoutItem Tag="Ctrl + A" Text="Select All" Click="UniversalMenuFlyoutItem_Click"/>
+                            <MenuFlyoutItem Tag="Shift + Alt + RightArrow " Text="Expand Select" Click="UniversalSelectionMenuFlyoutItem_Click"/>
+                            <MenuFlyoutItem Tag="Shift + Alt + LeftArrow" Text="Shrink Select" Click="UniversalSelectionMenuFlyoutItem_Click"/>
+                            <MenuFlyoutSeparator/>
+                            <MenuFlyoutItem Tag="Shift + Alt + UpArrow" Text="Copy Line Up" Click="UniversalSelectionMenuFlyoutItem_Click"/>
+                            <MenuFlyoutItem Tag="Shift + Alt + DownArrow" Text="Copy Line Down" Click="UniversalSelectionMenuFlyoutItem_Click"/>
+                            <MenuFlyoutItem Tag="Alt + UpArrow" Text="Move Line Up" Click="UniversalSelectionMenuFlyoutItem_Click"/>
+                            <MenuFlyoutItem Tag="Alt + UpArrow" Text="Move Line Down" Click="UniversalSelectionMenuFlyoutItem_Click"/>
+                            <MenuFlyoutSeparator/>
+                            <MenuFlyoutItem Tag="Ctrl + Alt + UpArrow" Text="Add Cursor Above" Click="UniversalSelectionMenuFlyoutItem_Click"/>
+                            <MenuFlyoutItem Tag="Ctrl + Alt + DownArrow" Text="Add Cursor Below" Click="UniversalSelectionMenuFlyoutItem_Click"/>
+                            <MenuFlyoutItem Tag="Shift + Alt + I" Text="Add Cursors To line Ends" Click="UniversalSelectionMenuFlyoutItem_Click"/>
+                            <MenuFlyoutItem Tag="Ctrl + Shift + L" Text="Select All Occurences To Find Match" Click="UniversalSelectionMenuFlyoutItem_Click"/>
+                        </MenuFlyoutSubItem>
+                        <MenuFlyoutSubItem Text="View">
+                            
+                        </MenuFlyoutSubItem>
+                    </MenuFlyout>
+                </muxc:DropDownButton.Flyout>
+            </muxc:DropDownButton>
+        </StackPanel>
+    </Grid>
+
+
+</Page>
